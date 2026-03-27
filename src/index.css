@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  }
+}
+
+/* Print styles */
+@media print {
+  .config-panel,
+  .toolbar,
+  .preview-hint,
+  .no-print {
+    display: none !important;
+  }
+
+  .preview-area {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Each page = one .day-row group; force break after each */
+  .day-row {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .page-break {
+    display: none;
+  }
+
+  @page {
+    margin: 10mm;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Date picker override */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+.react-datepicker__input-container input {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+.react-datepicker__input-container input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
