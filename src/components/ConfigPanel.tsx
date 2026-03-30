@@ -86,7 +86,7 @@ export default function ConfigPanel() {
   }
 
   return (
-    <div className="config-panel w-96 flex-shrink-0 overflow-y-auto border-r border-orange-100 bg-orange-50 p-3">
+    <div className="config-panel w-full md:w-96 flex-shrink-0 overflow-y-auto border-r border-orange-100 bg-orange-50 p-3">
       {/* Basic Info */}
       <AccordionSection title="基本信息" icon="🗓️">
         <div>
