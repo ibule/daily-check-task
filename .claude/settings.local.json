@@ -7,7 +7,13 @@
       "Bash(npx tsc:*)",
       "mcp__Claude_Preview__preview_start",
       "Bash(npm run:*)",
-      "Bash(grep \"\\\\.css$\")"
+      "Bash(grep \"\\\\.css$\")",
+      "Bash(node -e \"require\\(''''puppeteer''''\\)\")",
+      "Bash(node test-print-pages.mjs)",
+      "Bash(node -e \":*)",
+      "Bash(*)",
+      "Write(*)",
+      "Read(*)"
     ]
   }
 }
