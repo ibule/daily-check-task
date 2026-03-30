@@ -6,18 +6,20 @@ const STYLE_PROMPTS: Record<string, string> = {
   humorous: '轻松幽默，可以有小玩笑，让孩子看了想笑',
 };
 
-type RateLimitResult =
-  | {
-      allowed: true;
-      remaining: number | null;
-      rollback: () => Promise<void>;
-    }
-  | {
-      allowed: false;
-      status: number;
-      error: string;
-      message: string;
-    };
+type AllowedRateLimitResult = {
+  allowed: true;
+  remaining: number | null;
+  rollback: () => Promise<void>;
+};
+
+type RejectedRateLimitResult = {
+  allowed: false;
+  status: number;
+  error: string;
+  message: string;
+};
+
+type RateLimitResult = AllowedRateLimitResult | RejectedRateLimitResult;
 
 type GeneratePayload = {
   name?: string;
@@ -32,6 +34,11 @@ interface RedisClientLike {
   expire(key: string, seconds: number): Promise<number>;
   decr(key: string): Promise<number>;
 }
+
+type RedisConstructor = {
+  new (url: string, options: Record<string, unknown>): RedisClientLike;
+  new (options: Record<string, unknown>): RedisClientLike;
+};
 
 function getCorsHeaders() {
   return {
@@ -78,7 +85,8 @@ async function getRedisClient(): Promise<RedisClientLike | null> {
   if (!redisClientPromise) {
     redisClientPromise = (async () => {
       try {
-        const { default: Redis } = await import('ioredis');
+        const redisModule = await import('ioredis');
+        const Redis = (redisModule.default ?? redisModule) as unknown as RedisConstructor;
         const redisUrl = process.env['REDIS_URL'];
 
         if (redisUrl) {
@@ -112,6 +120,10 @@ async function getRedisClient(): Promise<RedisClientLike | null> {
   }
 
   return redisClientPromise;
+}
+
+function isRejectedRateLimit(result: RateLimitResult): result is RejectedRateLimitResult {
+  return result.allowed === false;
 }
 
 async function applyRateLimit(ip: string): Promise<RateLimitResult> {
@@ -253,7 +265,7 @@ export async function handleGenerateEncouragementRequest(req: Request): Promise<
 
   const safeCount = Math.min(Math.max(1, Number(count)), 365);
   const rateLimit = await applyRateLimit(getClientIp(req.headers));
-  if (!rateLimit.allowed) {
+  if (isRejectedRateLimit(rateLimit)) {
     return jsonResponse(
       {
         success: false,
@@ -282,4 +294,3 @@ export async function handleGenerateEncouragementRequest(req: Request): Promise<
     return jsonResponse({ success: false, error: code, message }, status);
   }
 }
-

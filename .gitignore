@@ -8,3 +8,4 @@ deploy/tencent-pages-source.zip
 deploy/tencent-pages
 deploy/tencent-scf/index.mjs
 deploy/tencent-scf/function.zip
+.vercel
