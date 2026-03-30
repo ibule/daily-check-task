@@ -1,0 +1,12 @@
+.claude
+.vscode
+memory
+deploy
+dist
+tmp_*.mjs
+debug-pdf.mjs
+test-print-pages.mjs
+scripts/build-scf.sh
+scripts/deploy-scf.sh
+scripts/deploy-web.sh
+scf

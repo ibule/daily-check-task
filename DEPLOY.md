@@ -1,46 +1,55 @@
-# Deploy
+# Deploy To Vercel
 
 ## Prerequisites
 
-- Frontend hosting: install CloudBase CLI and log in
-  - `npm i -g @cloudbase/cli`
-  - `tcb login`
-- SCF: install Tencent Cloud CLI and log in
-  - `pip install tccli`
-  - `tccli auth login`
+- Install Vercel CLI
+  - `npm i -g vercel`
+- Log in
+  - `vercel login`
+- Link this repo to a Vercel project
+  - `vercel link`
 
-## Frontend
+## Environment Variables
+
+Set these in the Vercel dashboard or with `vercel env add`:
 
 ```bash
-export VITE_API_BASE_URL="https://1318529515-68ilz5mtwx.ap-guangzhou.tencentscf.com"
-npm run deploy:web
+DEEPSEEK_API_KEY=
+CORS_ALLOW_ORIGIN=*
+RATE_LIMIT_MODE=off
+RATE_LIMIT_PER_IP_DAY=5
+RATE_LIMIT_GLOBAL_DAY=50
+RATE_LIMIT_PREFIX=rate
+REDIS_URL=
+REDIS_HOST=
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0
+REDIS_TLS=false
 ```
 
-Optional variables:
+Notes:
+
+- On Vercel, `VITE_API_BASE_URL` should usually be left empty.
+- The frontend will call the same deployment origin at `/api/generate-encouragement`.
+- If you want Redis rate limiting, configure either `REDIS_URL` or `REDIS_HOST`-style variables.
+
+## Preview Deployment
 
 ```bash
-export TENCENT_CLOUDBASE_ENV_ID="work-5go9mdmrce0a3f13"
-export TENCENT_CLOUDBASE_DEPLOY_PATH="/"
+npm run vercel:preview
 ```
 
-## SCF
+## Production Deployment
 
 ```bash
-npm run deploy:scf
+npm run vercel:prod
 ```
 
-Optional variables:
+## Git-Based Deployment
+
+If the GitHub repository is connected to Vercel, every push to this `vercel` branch can create a preview deployment automatically. Promoting to production can then be handled in the Vercel dashboard, or by deploying with:
 
 ```bash
-export TENCENT_SCF_REGION="ap-guangzhou"
-export TENCENT_SCF_NAMESPACE="default"
-export TENCENT_SCF_NAME="daily-check-ai"
-export TENCENT_SCF_TIMEOUT="30"
-```
-
-## Full deploy
-
-```bash
-export VITE_API_BASE_URL="https://1318529515-68ilz5mtwx.ap-guangzhou.tencentscf.com"
-npm run deploy:all
+vercel --prod
 ```

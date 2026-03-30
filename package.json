@@ -6,10 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:scf": "./scripts/build-scf.sh",
-    "deploy:web": "./scripts/deploy-web.sh",
-    "deploy:scf": "./scripts/deploy-scf.sh",
-    "deploy:all": "npm run deploy:scf && npm run deploy:web",
+    "vercel:preview": "vercel",
+    "vercel:prod": "vercel --prod",
     "lint": "eslint .",
     "preview": "vite preview"
   },
