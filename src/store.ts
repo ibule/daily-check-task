@@ -9,7 +9,6 @@ interface AppState {
   config: PrintConfig;
   showFullPreview: boolean;
   aiLoading: boolean;
-  aiGeneratedLines: string[];
   aiRemainingCount: number | null;
   showSettingsModal: boolean;
   showAIPanel: boolean;
@@ -30,19 +29,14 @@ interface AppState {
   addWeekdayTask: (weekday: Weekday, name: string) => void;
   removeWeekdayTask: (weekday: Weekday, id: string) => void;
   setEncouragements: (list: string[]) => void;
-  addEncouragement: (text: string) => void;
-  removeEncouragement: (index: number) => void;
-  updateEncouragement: (index: number, text: string) => void;
   setColumnsPerRow: (cols: 1 | 2 | 3) => void;
   setPageOrientation: (orientation: 'portrait' | 'landscape') => void;
   setShowFullPreview: (show: boolean) => void;
   setAILoading: (loading: boolean) => void;
-  setAIGeneratedLines: (lines: string[]) => void;
   setAIRemainingCount: (count: number | null) => void;
   setShowSettingsModal: (show: boolean) => void;
   setShowAIPanel: (show: boolean) => void;
   setAIStyle: (style: string) => void;
-  confirmAILines: () => void;
   setCopyFromDay: (day: Weekday | null) => void;
   setShowCopyModal: (show: boolean) => void;
   copyWeekdayTasksTo: (targetDays: Weekday[]) => void;
@@ -85,7 +79,6 @@ export const useStore = create<AppState>()(
       config: defaultConfig,
       showFullPreview: false,
       aiLoading: false,
-      aiGeneratedLines: [],
       aiRemainingCount: null,
       showSettingsModal: false,
       showAIPanel: false,
@@ -222,30 +215,12 @@ export const useStore = create<AppState>()(
         }),
 
       setEncouragements: (list) =>
-        set((s) => ({ config: { ...s.config, encouragements: list } })),
-
-      addEncouragement: (text) =>
         set((s) => ({
           config: {
             ...s.config,
-            encouragements: [...s.config.encouragements, text],
+            encouragements: list.filter((line) => line.trim()),
           },
         })),
-
-      removeEncouragement: (index) =>
-        set((s) => ({
-          config: {
-            ...s.config,
-            encouragements: s.config.encouragements.filter((_, i) => i !== index),
-          },
-        })),
-
-      updateEncouragement: (index, text) =>
-        set((s) => {
-          const list = [...s.config.encouragements];
-          list[index] = text;
-          return { config: { ...s.config, encouragements: list } };
-        }),
 
       setColumnsPerRow: (cols) =>
         set((s) => ({ config: { ...s.config, columnsPerRow: cols } })),
@@ -255,18 +230,10 @@ export const useStore = create<AppState>()(
 
       setShowFullPreview: (show) => set({ showFullPreview: show }),
       setAILoading: (loading) => set({ aiLoading: loading }),
-      setAIGeneratedLines: (lines) => set({ aiGeneratedLines: lines }),
       setAIRemainingCount: (count) => set({ aiRemainingCount: count }),
       setShowSettingsModal: (show) => set({ showSettingsModal: show }),
       setShowAIPanel: (show) => set({ showAIPanel: show }),
       setAIStyle: (style) => set({ aiStyle: style }),
-
-      confirmAILines: () =>
-        set((s) => ({
-          config: { ...s.config, encouragements: s.aiGeneratedLines },
-          aiGeneratedLines: [],
-          showAIPanel: false,
-        })),
 
       setCopyFromDay: (day) => set({ copyFromDay: day }),
       setShowCopyModal: (show) => set({ showCopyModal: show }),
@@ -328,4 +295,3 @@ export const useStore = create<AppState>()(
     }
   )
 );
-

@@ -20,57 +20,93 @@
     display: none !important;
   }
 
+  /* 移除 overflow 限制，否则 break-after:page 无法穿透容器 */
+  .h-screen {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
   .preview-area {
     width: 100%;
     margin: 0;
     padding: 0;
+    overflow: visible !important;
+    /* 内容居中 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white !important;
   }
 
-  /* Each page = one .day-row group; force break after each */
+  /* 宽度居中，充分利用 A4 可打印区域 */
+  /* height 和 .day-card height:100% 由 App.tsx 动态注入（跟随纸张方向变化） */
   .day-row {
+    width: 100%;
+    max-width: none;
     page-break-inside: avoid;
     break-inside: avoid;
-    page-break-after: always;
-    break-after: page;
   }
 
+  .day-row.day-row-2col {
+    display: grid !important;
+    align-items: stretch;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: clamp(15mm, 4vw, 24mm);
+  }
+
+  .day-row.day-row-2col > .day-card {
+    min-width: 0;
+    width: auto;
+  }
+
+  /* 消除 space-y-2 在打印时的 8px 间距，避免 day-row 轻微溢出导致多余空白页 */
+  .print-pages > * {
+    margin-top: 0 !important;
+  }
+
+  /* .page-break 触发换页（不在最后一页后面）→ 无多余空白页 */
   .page-break {
-    display: none;
+    page-break-after: always;
+    break-after: page;
+    height: 0;
+    margin: 0;
+    padding: 0;
   }
 
   @page {
-    margin: 10mm;
+    margin: 12mm 4mm;
   }
 }
 
-/* Custom scrollbar */
+/* Warm scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #FFF7ED;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #FED7AA;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #F97316;
 }
 
-/* Date picker override */
+/* Date picker — warm orange focus */
 .react-datepicker-wrapper {
   width: 100%;
 }
 .react-datepicker__input-container input {
   width: 100%;
   padding: 6px 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
   font-size: 14px;
   outline: none;
+  background: white;
 }
 .react-datepicker__input-container input:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+  border-color: #f97316;
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.15);
 }

@@ -6,6 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:scf": "./scripts/build-scf.sh",
+    "deploy:web": "./scripts/deploy-web.sh",
+    "deploy:scf": "./scripts/deploy-scf.sh",
+    "deploy:all": "npm run deploy:scf && npm run deploy:web",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -17,6 +21,7 @@
     "dayjs": "^1.11.13",
     "docx": "^9.0.3",
     "file-saver": "^2.0.5",
+    "ioredis": "^5.10.1",
     "react": "^18.3.1",
     "react-datepicker": "^8.3.0",
     "react-dom": "^18.3.1",
@@ -29,6 +34,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.3",
+    "puppeteer": "^24.40.0",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.6.2",
     "vite": "^6.0.5"

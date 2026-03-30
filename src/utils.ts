@@ -22,10 +22,11 @@ export function assignEncouragements(list: string[], count: number): string[] {
   return Array.from({ length: count }, (_, i) => list[i % list.length]);
 }
 
-export function resolveGenerateCount(dayCount: number): number {
-  if (dayCount <= 14) return dayCount;
-  if (dayCount <= 90) return 14;
-  return 30;
+export function parseEncouragementLines(text: string): string[] {
+  return text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
 }
 
 export function buildDayCards(config: PrintConfig): DayCard[] {
@@ -60,9 +61,8 @@ export function getDayCount(start: string, end: string): number {
 }
 
 export function estimatePages(dayCount: number, columnsPerRow: number): number {
-  const rowsPerPage = columnsPerRow === 1 ? 2 : columnsPerRow === 2 ? 4 : 6;
-  // With landscape 2-col or 3-col, more fit per page
-  return Math.ceil(dayCount / rowsPerPage);
+  // Each preview "page" (day-row) maps to exactly one printed page via break-after:page
+  return Math.ceil(dayCount / columnsPerRow);
 }
 
 export function generateId(): string {

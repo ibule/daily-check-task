@@ -2,3 +2,9 @@ node_modules
 dist
 .env
 .env.local
+tmp_*.mjs
+deploy/tencent-pages-source
+deploy/tencent-pages-source.zip
+deploy/tencent-pages
+deploy/tencent-scf/index.mjs
+deploy/tencent-scf/function.zip
