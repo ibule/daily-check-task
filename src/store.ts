@@ -47,7 +47,7 @@ const today = dayjs().format('YYYY-MM-DD');
 const endOfMonth = dayjs().endOf('month').format('YYYY-MM-DD');
 
 const defaultConfig: PrintConfig = {
-  name: '',
+  name: '小明',
   startDate: today,
   endDate: endOfMonth,
   taskConfig: {
@@ -68,7 +68,7 @@ const defaultConfig: PrintConfig = {
     '加油，你是最棒的！',
   ],
   columnsPerRow: 2,
-  pageOrientation: 'portrait',
+  pageOrientation: 'landscape',
 };
 
 export const useStore = create<AppState>()(

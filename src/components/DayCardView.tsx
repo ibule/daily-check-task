@@ -42,9 +42,8 @@ export default function DayCardView({ card, columnsPerRow, orientation, fixedTas
 
   return (
     <div
-      className="day-card"
+      className="day-card day-card-screen"
       style={{
-        border: '1.5px solid #1a1a1a',
         borderRadius: '8px',
         overflow: 'hidden',
         display: 'flex',
@@ -52,25 +51,26 @@ export default function DayCardView({ card, columnsPerRow, orientation, fixedTas
         fontFamily: '"PingFang SC","Microsoft YaHei",sans-serif',
       }}
     >
-      {/* ── Header: white bg, large bold black date ── */}
+      {/* ── Header ── */}
       <div
+        className="day-card-header"
         style={{
-          background: '#fff',
           textAlign: 'center',
           padding: s.hp,
-          borderBottom: '2px solid #1a1a1a',
           flexShrink: 0,
         }}
       >
-        <div style={{ fontWeight: 900, fontSize: s.df, letterSpacing: '1px', color: '#111', lineHeight: 1.1 }}>
+        <div style={{ fontWeight: 900, fontSize: s.df, letterSpacing: '1px', lineHeight: 1.1 }}
+          className="day-card-date">
           {card.displayDate}
         </div>
-        <div style={{ fontSize: s.wf, color: '#666', letterSpacing: '1px', marginTop: '4px', fontWeight: 500 }}>
+        <div style={{ fontSize: s.wf, letterSpacing: '1px', marginTop: '4px', fontWeight: 500 }}
+          className="day-card-weekday">
           {card.weekdayLabel}
         </div>
       </div>
 
-      {/* ── Task grid — flex:1 fills available card height ── */}
+      {/* ── Task grid ── */}
       <div
         style={{
           display: 'grid',
@@ -81,13 +81,13 @@ export default function DayCardView({ card, columnsPerRow, orientation, fixedTas
         }}
       >
         {/* Table header */}
-        <div style={{ background: '#f2f2f2', fontWeight: 600, fontSize: s.tf, color: '#555', padding: s.tp, borderBottom: '1px solid #ddd', display: 'flex', alignItems: 'center' }}>
+        <div className="day-card-th" style={{ fontWeight: 600, fontSize: s.tf, padding: s.tp, display: 'flex', alignItems: 'center' }}>
           今日任务
         </div>
-        <div style={{ background: '#f2f2f2', fontWeight: 600, fontSize: s.tf, color: '#555', borderBottom: '1px solid #ddd', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="day-card-th day-card-th-center" style={{ fontWeight: 600, fontSize: s.tf, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           □ 已完成
         </div>
-        <div style={{ background: '#f2f2f2', fontWeight: 600, fontSize: s.tf, color: '#555', borderBottom: '1px solid #ddd', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="day-card-th day-card-th-center" style={{ fontWeight: 600, fontSize: s.tf, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           □ 未完成
         </div>
 
@@ -100,13 +100,12 @@ export default function DayCardView({ card, columnsPerRow, orientation, fixedTas
           return (
             <div key={`row-${card.isoDate}-${i}`} style={{ display: 'contents' }}>
               <div
+                className="day-card-td"
                 style={{
                   padding: s.rp,
                   fontSize: s.rf,
                   fontWeight: showEmptyState ? 400 : 500,
-                  color: showEmptyState ? '#aaa' : '#111',
                   fontStyle: showEmptyState ? 'italic' : 'normal',
-                  borderBottom: '0.5px solid #eee',
                   display: 'flex',
                   alignItems: 'center',
                   overflow: 'hidden',
@@ -114,11 +113,11 @@ export default function DayCardView({ card, columnsPerRow, orientation, fixedTas
               >
                 {task ? `${i + 1}. ${task.name}` : showEmptyState ? '暂无任务' : '\u00A0'}
               </div>
-              <div style={{ borderBottom: '0.5px solid #eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ display: 'inline-block', width: s.bs, height: s.bs, border: '1.5px solid #999', borderRadius: '2px', flexShrink: 0 }} />
+              <div className="day-card-td day-card-td-center" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="day-card-checkbox" style={{ width: s.bs, height: s.bs }} />
               </div>
-              <div style={{ borderBottom: '0.5px solid #eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ display: 'inline-block', width: s.bs, height: s.bs, border: '1.5px solid #999', borderRadius: '2px', flexShrink: 0 }} />
+              <div className="day-card-td day-card-td-center" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="day-card-checkbox" style={{ width: s.bs, height: s.bs }} />
               </div>
             </div>
           );
@@ -127,12 +126,10 @@ export default function DayCardView({ card, columnsPerRow, orientation, fixedTas
 
       {/* ── Encouragement bar ── */}
       <div
+        className="day-card-cheer"
         style={{
-          background: '#fffbee',
-          borderTop: '1.5px solid #e8c84a',
           textAlign: 'center',
           fontWeight: 700,
-          color: '#9a6e00',
           padding: s.cp,
           fontSize: s.cf,
           letterSpacing: '0.5px',

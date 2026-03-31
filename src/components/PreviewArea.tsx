@@ -27,24 +27,26 @@ export default function PreviewArea() {
   }
 
   return (
-    <div className="preview-area flex-1 overflow-auto bg-amber-50 p-3 md:p-4">
+    <div className="preview-area h-full flex-1 overflow-y-auto overflow-x-hidden p-3 md:p-4">
       {needsTruncation && !showFullPreview && (
-        <div className="preview-hint mb-3 flex flex-col items-start gap-2 rounded-xl border border-orange-200 bg-orange-100 px-4 py-2.5 text-sm text-orange-800 sm:flex-row sm:items-center sm:justify-between">
-          <span>🔍 仅预览前 {PREVIEW_LIMIT} 天，打印/导出将包含全部 {dayCount} 天</span>
+        <div className="preview-hint mb-4 flex items-center justify-between rounded-lg border border-[#222] bg-[#141414] px-4 py-2.5 text-xs text-[#666]">
+          <span>仅预览前 {PREVIEW_LIMIT} 天，打印将包含全部 {dayCount} 天</span>
           <button
+            type="button"
             onClick={() => setShowFullPreview(true)}
-            className="text-xs font-medium text-orange-600 hover:text-orange-700 hover:underline"
+            className="text-[#5b6cf8] hover:text-[#8b95ff] transition-colors"
           >
-            展开全部预览 →
+            展开全部 →
           </button>
         </div>
       )}
       {showFullPreview && needsTruncation && (
-        <div className="preview-hint mb-3 flex flex-col items-start gap-2 rounded-xl border border-amber-200 bg-amber-100 px-4 py-2.5 text-sm text-amber-800 sm:flex-row sm:items-center sm:justify-between">
-          <span>📋 正在预览全部 {dayCount} 天</span>
+        <div className="preview-hint mb-4 flex items-center justify-between rounded-lg border border-[#222] bg-[#141414] px-4 py-2.5 text-xs text-[#666]">
+          <span>预览全部 {dayCount} 天</span>
           <button
+            type="button"
             onClick={() => setShowFullPreview(false)}
-            className="text-xs font-medium text-orange-600 hover:text-orange-700 hover:underline"
+            className="text-[#5b6cf8] hover:text-[#8b95ff] transition-colors"
           >
             收起
           </button>
@@ -64,14 +66,10 @@ export default function PreviewArea() {
 
           return (
             <div key={pageIdx}>
-              {/* Page indicator — pill badge */}
-              <div className="preview-hint no-print mb-2 flex items-center gap-2">
-                <span className="inline-flex items-center rounded-full bg-orange-100 px-3 py-0.5 text-xs font-medium text-orange-600">
-                  第 {pageIdx + 1} 页
-                </span>
+              <div className="preview-hint no-print mb-2">
+                <span className="page-badge">第 {pageIdx + 1} 页</span>
               </div>
 
-              {/* One page = N cards side by side */}
               <div className={`grid ${gridCols} gap-3 ${dayRowClass}`}>
                 {pageCards.map((card) => (
                   <DayCardView
@@ -84,10 +82,9 @@ export default function PreviewArea() {
                 ))}
               </div>
 
-              {/* Page break between pages (not after last) */}
               {pageIdx < pages.length - 1 && (
                 <div className="page-break">
-                  <div className="no-print my-4 border-t border-dashed border-orange-200" />
+                  <div className="no-print my-5 border-t border-[#1e1e1e]" />
                 </div>
               )}
             </div>
@@ -96,9 +93,9 @@ export default function PreviewArea() {
       </div>
 
       {dayCards.length === 0 && (
-        <div className="flex h-64 flex-col items-center justify-center gap-3 text-center text-amber-400">
-          <span className="text-4xl">📅</span>
-          <span className="text-sm">请先完成配置，再预览排版效果</span>
+        <div className="flex h-64 flex-col items-center justify-center gap-2 text-center">
+          <span className="text-3xl opacity-20">▦</span>
+          <span className="text-sm text-[#444]">请先完成配置</span>
         </div>
       )}
     </div>

@@ -91,115 +91,90 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen md:h-screen flex flex-col overflow-hidden bg-amber-50">
-      {/* Toolbar — warm orange gradient */}
-      <header className="toolbar flex-shrink-0 bg-gradient-to-r from-orange-500 to-amber-400 shadow-md">
-        <div className="flex flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between md:px-5">
-          <div className="flex items-center justify-between gap-3">
-            <h1 className="font-bold text-white text-base md:text-lg flex items-center gap-2 tracking-wide">
-              🌟 每日打卡生成器
-            </h1>
-          </div>
+    <div className="print-root app-root min-h-screen md:h-screen flex flex-col overflow-hidden">
+      {/* Toolbar */}
+      <header className="toolbar app-toolbar flex-shrink-0">
+        <div className="flex items-center justify-between px-5 h-12">
+          {/* Logo */}
+          <h1 className="text-lg font-bold text-[#ededed] tracking-tight">
+            每日打卡生成器
+          </h1>
 
+          {/* Desktop actions */}
           <div className="hidden md:flex items-center gap-2">
-            <button
-              onClick={handlePrint}
-              className="no-print px-4 py-1.5 text-sm bg-white text-orange-500 font-medium rounded-full hover:bg-orange-50 flex items-center gap-1.5 transition-colors shadow-sm"
-              aria-label="直接打印"
-            >
-              🖨️ 打印
+            <button type="button" onClick={handlePrint} className="no-print toolbar-btn" aria-label="打印">
+              打印
             </button>
-            <button
-              onClick={handleExportPdf}
-              className="no-print px-4 py-1.5 text-sm border-2 border-white text-white font-medium rounded-full hover:bg-white/10 flex items-center gap-1.5 transition-colors"
-              aria-label="导出 PDF"
-            >
-              📄 导出 PDF
+            <button type="button" onClick={handleExportPdf} className="no-print toolbar-btn accent" aria-label="导出 PDF">
+              导出 PDF
             </button>
           </div>
 
-          <div className="no-print flex flex-col gap-2 md:hidden">
-            <div className="flex items-center gap-2 text-xs text-white/90">
-              <span
-                className={`rounded-full px-2.5 py-1 font-medium ${
-                  mobileStep === 'config' ? 'bg-white text-orange-500' : 'bg-white/20 text-white'
-                }`}
-              >
-                1. 配置
-              </span>
-              <span className="opacity-70">→</span>
-              <span
-                className={`rounded-full px-2.5 py-1 font-medium ${
-                  mobileStep === 'preview' ? 'bg-white text-orange-500' : 'bg-white/20 text-white'
-                }`}
-              >
-                2. 预览
-              </span>
-            </div>
-
+          {/* Mobile step indicator + action */}
+          <div className="no-print flex items-center gap-2 md:hidden">
             {mobileStep === 'config' ? (
               <button
+                type="button"
                 onClick={() => setMobileStep('preview')}
-                className="inline-flex items-center justify-center rounded-2xl bg-white px-4 py-2.5 text-sm font-semibold text-orange-500 shadow-sm transition-colors hover:bg-orange-50"
+                className="toolbar-btn accent text-xs"
               >
-                下一步：预览排版
+                预览 →
               </button>
             ) : (
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  onClick={() => setMobileStep('config')}
-                  className="inline-flex items-center justify-center rounded-2xl bg-white/20 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-white/30"
-                >
-                  ← 配置
-                </button>
-                <button
-                  onClick={handlePrint}
-                  className="inline-flex items-center justify-center rounded-2xl bg-white px-3 py-2 text-sm font-medium text-orange-500 shadow-sm transition-colors hover:bg-orange-50"
-                >
-                  🖨️ 打印
-                </button>
-                <button
-                  onClick={handleExportPdf}
-                  className="inline-flex items-center justify-center rounded-2xl border border-white bg-white/10 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20"
-                >
-                  📄 导出
-                </button>
+              <div className="flex items-center gap-1.5">
+                <button type="button" onClick={() => setMobileStep('config')} className="toolbar-btn text-xs">← 配置</button>
+                <button type="button" onClick={handlePrint} className="toolbar-btn text-xs">打印</button>
+                <button type="button" onClick={handleExportPdf} className="toolbar-btn accent text-xs">导出</button>
               </div>
             )}
           </div>
         </div>
       </header>
 
-      {/* PDF hint bar */}
+      {/* PDF hint */}
       {showPdfHint && (
-        <div className="no-print flex flex-col gap-1 border-b border-orange-200 bg-orange-100 px-4 py-2 text-sm text-orange-800 sm:flex-row sm:items-center sm:gap-2">
-          <span>💡 在打印对话框中，将打印机/目标选为 <strong>「另存为 PDF」</strong> 即可导出 PDF 文件</span>
+        <div className="no-print flex items-center gap-2 px-5 py-2 text-xs border-b border-[#1f1f1f] bg-[#111] text-accent-soft">
+          <span>在打印对话框中选择「另存为 PDF」即可导出</span>
         </div>
       )}
 
       {/* Performance hint */}
       {dayCount > 90 && (
-        <div className="no-print px-4 py-1.5 bg-amber-50 border-b border-amber-100 text-xs text-amber-700">
-          共 {dayCount} 天，打印或导出时将自动渲染全部内容
+        <div className="no-print flex items-center px-5 py-1.5 text-xs border-b border-[#1f1f1f] text-subtle">
+          共 {dayCount} 天，打印时将自动渲染全部内容
         </div>
       )}
 
       {/* Main layout */}
-      <div className="flex flex-1 overflow-hidden">
-        <div className="hidden md:block">
+      <div className="print-main flex flex-1 min-h-0 overflow-hidden">
+        <div className="print-config hidden md:block md:h-full">
           <ConfigPanel />
         </div>
-        <div className="hidden md:block md:flex-1 md:min-w-0">
+        <div className="print-preview hidden md:block md:h-full md:flex-1 md:min-w-0">
           <PreviewArea />
         </div>
 
-        <div className={`${mobileStep === 'config' ? 'block' : 'hidden'} flex-1 min-h-0 md:hidden`}>
+        <div className={`no-print ${mobileStep === 'config' ? 'block' : 'hidden'} flex-1 min-h-0 md:hidden`}>
           <ConfigPanel />
         </div>
-        <div className={`${mobileStep === 'preview' ? 'block' : 'hidden'} flex-1 min-h-0 md:hidden`}>
+        <div className={`no-print ${mobileStep === 'preview' ? 'block' : 'hidden'} flex-1 min-h-0 md:hidden`}>
           <PreviewArea />
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="no-print flex-shrink-0 border-t border-[#2a2a2a] px-5 py-2.5 flex items-center justify-center gap-3 text-[11px] text-[#777]">
+        <span>© Copyright 浩铭科技. All Rights Reserved.</span>
+        <span className="text-[#444]">|</span>
+        <a
+          href="https://beian.miit.gov.cn/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-[#aaa] transition-colors"
+        >
+          粤ICP备2023084687号
+        </a>
+      </footer>
 
       {/* Modals */}
       {showCopyModal && <CopyModal />}

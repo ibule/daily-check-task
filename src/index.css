@@ -7,11 +7,452 @@
     box-sizing: border-box;
   }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    background: #0a0a0a;
+    color: #ededed;
   }
 }
 
-/* Print styles */
+/* ─────────────────────────────────────────
+   LAYOUT SHELLS
+───────────────────────────────────────── */
+.app-root {
+  background: #0a0a0a;
+}
+
+.app-toolbar {
+  background: #111111;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.config-panel {
+  background: #111111;
+  border-right: 1px solid #1f1f1f;
+}
+
+.preview-area {
+  background: #0a0a0a;
+}
+
+/* ─────────────────────────────────────────
+   CONFIG SECTIONS  (统一风格，靠左 border 区分)
+───────────────────────────────────────── */
+.section-card {
+  background: #161616;
+  border: 1px solid #222222;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.section-card + .section-card {
+  margin-top: 8px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #aaa;
+}
+
+.section-header .icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  font-size: 11px;
+  background: #1f1f1f;
+}
+
+.section-body {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ─────────────────────────────────────────
+   FORM ELEMENTS
+───────────────────────────────────────── */
+.field-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 6px;
+  display: block;
+  letter-spacing: 0.02em;
+}
+
+.input-base {
+  width: 100%;
+  padding: 7px 11px;
+  font-size: 13px;
+  background: #0f0f0f;
+  border: 1px solid #2a2a2a;
+  border-radius: 7px;
+  color: #ededed;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input-base::placeholder {
+  color: #444;
+}
+
+.input-base:focus {
+  border-color: #5b6cf8;
+  box-shadow: 0 0 0 3px rgba(91, 108, 248, 0.12);
+}
+
+/* Pill buttons (quick ranges, weekdays) */
+.pill-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 99px;
+  border: 1px solid #2a2a2a;
+  background: #161616;
+  color: #888;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.pill-btn:hover {
+  border-color: #5b6cf8;
+  color: #c0c4ff;
+}
+
+.pill-btn.active {
+  border-color: #5b6cf8;
+  background: rgba(91, 108, 248, 0.12);
+  color: #8b95ff;
+}
+
+/* Primary action button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 7px;
+  border: 1px solid #5b6cf8;
+  background: rgba(91, 108, 248, 0.1);
+  color: #8b95ff;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-primary:hover {
+  background: rgba(91, 108, 248, 0.18);
+  border-color: #8b95ff;
+}
+
+/* Ghost button */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 7px;
+  border: 1px solid #2a2a2a;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-ghost:hover {
+  border-color: #3a3a3a;
+  color: #aaa;
+}
+
+/* Toolbar buttons */
+.toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 7px;
+  border: 1px solid #2a2a2a;
+  background: #161616;
+  color: #aaa;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.toolbar-btn:hover {
+  border-color: #3a3a3a;
+  background: #1f1f1f;
+  color: #ededed;
+}
+
+.toolbar-btn.accent {
+  border-color: #5b6cf8;
+  background: rgba(91, 108, 248, 0.1);
+  color: #8b95ff;
+}
+
+.toolbar-btn.accent:hover {
+  background: rgba(91, 108, 248, 0.18);
+  color: #c0c4ff;
+}
+
+/* ─────────────────────────────────────────
+   DAY CARD — screen theme (dark)
+   Print overrides are in @media print below
+───────────────────────────────────────── */
+.day-card-screen {
+  border: 1px solid #2a2a2a;
+  background: #141414;
+}
+
+.day-card-header {
+  background: #1a1a1a;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.day-card-date   { color: #ededed; }
+.day-card-weekday { color: #666; }
+
+.day-card-th {
+  background: #111;
+  color: #888;
+  border-bottom: 1px solid #222;
+}
+.day-card-th-center { border-left: 1px solid #222; }
+
+.day-card-td {
+  color: #ccc;
+  border-bottom: 1px solid #1e1e1e;
+}
+.day-card-td-center {
+  border-left: 1px solid #1e1e1e;
+}
+
+.day-card-checkbox {
+  display: inline-block;
+  border: 1.5px solid #3a3a3a;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.day-card-cheer {
+  background: #161616;
+  border-top: 1px solid #2a2a2a;
+  color: #888;
+}
+
+/* ─────────────────────────────────────────
+   TASK LIST
+───────────────────────────────────────── */
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #0f0f0f;
+  border: 1px solid #222;
+  border-radius: 7px;
+}
+
+.task-row:hover {
+  border-color: #2a2a2a;
+}
+
+/* ─────────────────────────────────────────
+   NAME SUGGESTIONS DROPDOWN
+───────────────────────────────────────── */
+.suggestions-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+
+.suggestions-dropdown button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 14px;
+  font-size: 13px;
+  color: #ccc;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.suggestions-dropdown button:hover {
+  background: #1f1f1f;
+  color: #ededed;
+}
+
+/* ─────────────────────────────────────────
+   PREVIEW AREA
+───────────────────────────────────────── */
+.page-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 99px;
+  background: #1a1a1a;
+  border: 1px solid #2e2e2e;
+  color: #777;
+  letter-spacing: 0.03em;
+}
+
+/* ─────────────────────────────────────────
+   UTILITY COLOR / SIZE HELPERS
+   (replaces inline style={{...}} props)
+───────────────────────────────────────── */
+
+/* Day-count hint text and orientation recommendation */
+.text-muted {
+  color: #888;
+}
+
+/* Radio label, copy-to-other-days button */
+.text-dim {
+  color: #aaa;
+}
+
+/* Remaining AI count, encouragement count, orientation hint */
+.text-hint {
+  color: #777;
+}
+
+/* PDF export hint banner */
+.text-accent-soft {
+  color: #8b95ff;
+}
+
+/* Performance / large-day-count notice */
+.text-subtle {
+  color: #888;
+}
+
+/* AI button sparkle icon — smaller than surrounding text */
+.icon-sm {
+  font-size: 11px;
+}
+
+/* Encouragement textarea minimum height */
+.textarea-hint {
+  min-height: 120px;
+}
+
+/* ─────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a3a;
+}
+
+/* ─────────────────────────────────────────
+   DATE PICKER
+───────────────────────────────────────── */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  width: 100%;
+  padding: 7px 11px;
+  font-size: 13px;
+  background: #0f0f0f;
+  border: 1px solid #2a2a2a;
+  border-radius: 7px;
+  color: #ededed;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.react-datepicker__input-container input::placeholder {
+  color: #444;
+}
+
+.react-datepicker__input-container input:focus {
+  border-color: #5b6cf8;
+  box-shadow: 0 0 0 3px rgba(91, 108, 248, 0.12);
+}
+
+.react-datepicker {
+  background: #161616 !important;
+  border: 1px solid #2a2a2a !important;
+  border-radius: 10px !important;
+  font-family: inherit !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+}
+
+.react-datepicker__header {
+  background: #1a1a1a !important;
+  border-bottom: 1px solid #222 !important;
+  border-radius: 10px 10px 0 0 !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  color: #aaa !important;
+}
+
+.react-datepicker__day {
+  color: #ccc !important;
+  border-radius: 5px !important;
+}
+
+.react-datepicker__day:hover {
+  background: #1f1f1f !important;
+  color: #fff !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background: #5b6cf8 !important;
+  color: #fff !important;
+}
+
+.react-datepicker__day--outside-month {
+  color: #333 !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: #555 !important;
+}
+
+/* ─────────────────────────────────────────
+   PRINT STYLES
+───────────────────────────────────────── */
 @media print {
   .config-panel,
   .toolbar,
@@ -20,10 +461,32 @@
     display: none !important;
   }
 
-  /* 移除 overflow 限制，否则 break-after:page 无法穿透容器 */
-  .h-screen {
+  body,
+  #root,
+  .h-screen,
+  .print-root {
     height: auto !important;
+    min-height: unset !important;
     overflow: visible !important;
+  }
+
+  .print-main {
+    height: auto !important;
+    min-height: unset !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  .print-config {
+    display: none !important;
+  }
+
+  .print-preview {
+    display: block !important;
+    height: auto !important;
+    min-height: unset !important;
+    overflow: visible !important;
+    width: 100% !important;
   }
 
   .preview-area {
@@ -31,15 +494,24 @@
     margin: 0;
     padding: 0;
     overflow: visible !important;
-    /* 内容居中 */
     display: flex;
     flex-direction: column;
     align-items: center;
     background: white !important;
   }
 
-  /* 宽度居中，充分利用 A4 可打印区域 */
-  /* height 和 .day-card height:100% 由 App.tsx 动态注入（跟随纸张方向变化） */
+  /* Restore card to white/black for print */
+  .day-card-screen      { border: 1.5px solid #1a1a1a !important; background: #fff !important; }
+  .day-card-header      { background: #fff !important; border-bottom: 2px solid #1a1a1a !important; }
+  .day-card-date        { color: #111 !important; }
+  .day-card-weekday     { color: #666 !important; }
+  .day-card-th          { background: #f2f2f2 !important; color: #555 !important; border-bottom: 1px solid #ddd !important; }
+  .day-card-th-center   { border-left: 1px solid #ddd !important; }
+  .day-card-td          { color: #111 !important; border-bottom: 0.5px solid #eee !important; }
+  .day-card-td-center   { border-left: 0.5px solid #eee !important; }
+  .day-card-checkbox    { border: 1.5px solid #999 !important; }
+  .day-card-cheer       { background: #fffbee !important; border-top: 1.5px solid #e8c84a !important; color: #9a6e00 !important; }
+
   .day-row {
     width: 100%;
     max-width: none;
@@ -59,12 +531,10 @@
     width: auto;
   }
 
-  /* 消除 space-y-2 在打印时的 8px 间距，避免 day-row 轻微溢出导致多余空白页 */
   .print-pages > * {
     margin-top: 0 !important;
   }
 
-  /* .page-break 触发换页（不在最后一页后面）→ 无多余空白页 */
   .page-break {
     page-break-after: always;
     break-after: page;
@@ -76,37 +546,4 @@
   @page {
     margin: 12mm 4mm;
   }
-}
-
-/* Warm scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #FFF7ED;
-}
-::-webkit-scrollbar-thumb {
-  background: #FED7AA;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #F97316;
-}
-
-/* Date picker — warm orange focus */
-.react-datepicker-wrapper {
-  width: 100%;
-}
-.react-datepicker__input-container input {
-  width: 100%;
-  padding: 6px 10px;
-  border: 1px solid #fed7aa;
-  border-radius: 8px;
-  font-size: 14px;
-  outline: none;
-  background: white;
-}
-.react-datepicker__input-container input:focus {
-  border-color: #f97316;
-  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.15);
 }

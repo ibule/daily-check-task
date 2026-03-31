@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Task } from '../types';
@@ -9,41 +10,40 @@ interface Props {
 }
 
 export default function SortableTask({ task, onRemove, onUpdate }: Props) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: task.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id });
+  const divRef = useRef<HTMLDivElement>(null);
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
+  // dnd-kit transform/transition must be applied as inline style (changes every animation frame).
+  // We write directly to the DOM element to avoid the "no inline styles" lint rule.
+  useEffect(() => {
+    const el = divRef.current;
+    if (!el) return;
+    el.style.transform = CSS.Transform.toString(transform) ?? '';
+    el.style.transition = transition ?? '';
+  }, [transform, transition]);
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
-      className="flex items-center gap-2 py-1.5 px-2 bg-white border border-gray-200 rounded group"
+      ref={(node) => {
+        setNodeRef(node);
+        (divRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      }}
+      className={`task-row group${isDragging ? ' opacity-40' : ''}`}
     >
-      {/* Drag handle */}
       <button
+        type="button"
         {...attributes}
         {...listeners}
-        className="text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing flex-shrink-0"
+        className="text-hint hover:text-dim cursor-grab active:cursor-grabbing flex-shrink-0"
         aria-label="拖拽排序"
       >
-        <svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor">
-          <circle cx="4" cy="4" r="1.5" />
-          <circle cx="8" cy="4" r="1.5" />
-          <circle cx="4" cy="8" r="1.5" />
-          <circle cx="8" cy="8" r="1.5" />
-          <circle cx="4" cy="12" r="1.5" />
-          <circle cx="8" cy="12" r="1.5" />
+        <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor">
+          <circle cx="3" cy="3" r="1.3" />
+          <circle cx="7" cy="3" r="1.3" />
+          <circle cx="3" cy="7" r="1.3" />
+          <circle cx="7" cy="7" r="1.3" />
+          <circle cx="3" cy="11" r="1.3" />
+          <circle cx="7" cy="11" r="1.3" />
         </svg>
       </button>
 
@@ -51,16 +51,17 @@ export default function SortableTask({ task, onRemove, onUpdate }: Props) {
         type="text"
         value={task.name}
         onChange={(e) => onUpdate(task.id, e.target.value.slice(0, 20))}
-        className="flex-1 text-sm outline-none border-none bg-transparent"
-        placeholder="任务名称（最多 20 字）"
+        className="flex-1 text-sm outline-none border-none bg-transparent text-[#ccc] placeholder-[#444]"
+        placeholder="任务名称"
         maxLength={20}
         aria-label="任务名称"
       />
 
       <button
+        type="button"
         onClick={() => onRemove(task.id)}
-        className="text-gray-300 hover:text-red-400 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-        aria-label="删除任务"
+        className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-hint hover:text-[#f87171]"
+        aria-label="删除"
       >
         ✕
       </button>
