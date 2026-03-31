@@ -3,17 +3,14 @@ import { useStore } from './store';
 import { getDayCount } from './utils';
 import ConfigPanel from './components/ConfigPanel';
 import PreviewArea from './components/PreviewArea';
-import SettingsModal from './components/SettingsModal';
 import CopyModal from './components/CopyModal';
 
 type MobileStep = 'config' | 'preview';
 
 export default function App() {
   const config = useStore((s) => s.config);
-  const showSettingsModal = useStore((s) => s.showSettingsModal);
   const showCopyModal = useStore((s) => s.showCopyModal);
   const showFullPreview = useStore((s) => s.showFullPreview);
-  const setShowSettingsModal = useStore((s) => s.setShowSettingsModal);
   const setShowFullPreview = useStore((s) => s.setShowFullPreview);
 
   const dayCount = getDayCount(config.startDate, config.endDate);
@@ -102,23 +99,9 @@ export default function App() {
             <h1 className="font-bold text-white text-base md:text-lg flex items-center gap-2 tracking-wide">
               🌟 每日打卡生成器
             </h1>
-            <button
-              onClick={() => setShowSettingsModal(true)}
-              className="no-print inline-flex md:hidden items-center gap-1.5 rounded-full bg-white/20 px-3 py-1.5 text-sm text-white transition-colors hover:bg-white/30"
-              aria-label="设置"
-            >
-              ⚙️ 设置
-            </button>
           </div>
 
           <div className="hidden md:flex items-center gap-2">
-            <button
-              onClick={() => setShowSettingsModal(true)}
-              className="no-print px-3 py-1.5 text-sm bg-white/20 text-white rounded-full hover:bg-white/30 flex items-center gap-1.5 transition-colors"
-              aria-label="设置"
-            >
-              ⚙️ 设置
-            </button>
             <button
               onClick={handlePrint}
               className="no-print px-4 py-1.5 text-sm bg-white text-orange-500 font-medium rounded-full hover:bg-orange-50 flex items-center gap-1.5 transition-colors shadow-sm"
@@ -219,7 +202,6 @@ export default function App() {
       </div>
 
       {/* Modals */}
-      {showSettingsModal && <SettingsModal />}
       {showCopyModal && <CopyModal />}
     </div>
   );

@@ -3,14 +3,6 @@ import { useStore } from '../store';
 import { AI_STYLES, AIStyle } from '../types';
 import { getDayCount } from '../utils';
 
-const STYLE_PROMPTS: Record<AIStyle, string> = {
-  gentle: '温柔亲切，像妈妈说话的语气，给孩子温暖感',
-  lively: '活泼开朗，可以用叠词、拟声词，语气轻松有趣',
-  positive: '积极向上，简洁有力，像运动员宣言',
-  poetic: '文艺清新，句式优美，带有画面感',
-  humorous: '轻松幽默，可以有小玩笑，让孩子看了想笑',
-};
-
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
 const GENERATE_API_URL = `${API_BASE_URL}/api/generate-encouragement`;
 
@@ -23,7 +15,6 @@ export default function AIPanel() {
   const setAILoading = useStore((s) => s.setAILoading);
   const setAIRemainingCount = useStore((s) => s.setAIRemainingCount);
   const setEncouragements = useStore((s) => s.setEncouragements);
-  const setShowSettingsModal = useStore((s) => s.setShowSettingsModal);
   const setShowAIPanel = useStore((s) => s.setShowAIPanel);
 
   const [showRateLimitDialog, setShowRateLimitDialog] = useState(false);
@@ -33,62 +24,22 @@ export default function AIPanel() {
 
   async function callAI() {
     const name = config.name || '小朋友';
-    const userKey = localStorage.getItem('deepseek_api_key');
 
     setAILoading(true);
     try {
-      let lines: string[];
-
-      if (userKey) {
-        const res = await fetch('https://api.deepseek.com/chat/completions', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${userKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'deepseek-chat',
-            temperature: 0.9,
-            messages: [
-              {
-                role: 'system',
-                content:
-                  '你是一个专门为孩子生成打卡鼓励语的助手。只输出鼓励语列表，每条独占一行，不要编号，不要引号，不要任何其他内容。',
-              },
-              {
-                role: 'user',
-                content: `请为名叫「${name}」的孩子生成 ${dayCount} 条每日打卡鼓励语。\n风格要求：${STYLE_PROMPTS[aiStyle as AIStyle]}\n要求：每条不超过 20 字，语气亲切自然，每条独立一行。`,
-              },
-            ],
-          }),
-          signal: AbortSignal.timeout(30000),
-        });
-        if (!res.ok) {
-          if (res.status === 401) {
-            throw Object.assign(new Error('API Key 无效，请检查设置'), { code: 'invalid_key' });
-          }
-          throw new Error(`DeepSeek 错误 ${res.status}`);
-        }
-        const data = await res.json();
-        lines = (data.choices[0].message.content as string)
-          .split('\n')
-          .map((l: string) => l.trim())
-          .filter(Boolean);
-      } else {
-        const res = await fetch(GENERATE_API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, count: dayCount, style: aiStyle }),
-          signal: AbortSignal.timeout(30000),
-        });
-        const data = await res.json();
-        if (!data.success) {
-          const err = Object.assign(new Error(data.message), { code: data.error });
-          throw err;
-        }
-        lines = data.lines;
-        if (data.remaining !== undefined) setAIRemainingCount(data.remaining);
+      const res = await fetch(GENERATE_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, count: dayCount, style: aiStyle }),
+        signal: AbortSignal.timeout(30000),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        const err = Object.assign(new Error(data.message), { code: data.error });
+        throw err;
       }
+      const lines = data.lines;
+      if (data.remaining !== undefined) setAIRemainingCount(data.remaining);
 
       setEncouragements(lines);
       setShowAIPanel(false);
@@ -158,15 +109,6 @@ export default function AIPanel() {
             <h3 className="font-semibold text-gray-800 mb-2">免费次数已用完</h3>
             <p className="text-sm text-gray-600 mb-4">{rateLimitMsg}</p>
             <div className="space-y-2">
-              <button
-                onClick={() => {
-                  setShowRateLimitDialog(false);
-                  setShowSettingsModal(true);
-                }}
-                className="block w-full py-2 text-sm bg-indigo-500 text-white rounded hover:bg-indigo-600"
-              >
-                填写自己的 DeepSeek Key
-              </button>
               <button
                 onClick={() => setShowRateLimitDialog(false)}
                 className="block w-full py-2 text-sm border border-gray-200 rounded hover:bg-gray-50"

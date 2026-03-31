@@ -139,7 +139,7 @@ async function applyRateLimit(ip: string): Promise<RateLimitResult> {
   try {
     const today = new Date().toISOString().slice(0, 10);
     const perIpLimit = parseInt(process.env['RATE_LIMIT_PER_IP_DAY'] ?? '5', 10);
-    const globalLimit = parseInt(process.env['RATE_LIMIT_GLOBAL_DAY'] ?? '50', 10);
+    const globalLimit = parseInt(process.env['RATE_LIMIT_GLOBAL_DAY'] ?? '100', 10);
     const prefix = process.env['RATE_LIMIT_PREFIX'] ?? 'rate';
     const globalKey = `${prefix}:global:${today}`;
     const ipKey = `${prefix}:ip:${ip}:${today}`;
@@ -152,7 +152,7 @@ async function applyRateLimit(ip: string): Promise<RateLimitResult> {
         allowed: false,
         status: 429,
         error: 'global_limit',
-        message: '今日平台免费额度已用完，请明天再试或在设置中填写自己的 API Key',
+        message: '今日平台免费额度已用完，请明天再试',
       };
     }
 
@@ -165,7 +165,7 @@ async function applyRateLimit(ip: string): Promise<RateLimitResult> {
         allowed: false,
         status: 429,
         error: 'rate_limited',
-        message: `今日免费生成次数已用完（每天最多 ${perIpLimit} 次），请明天再试或填写自己的 API Key`,
+        message: `今日免费生成次数已用完（每天最多 ${perIpLimit} 次），请明天再试`,
       };
     }
 
@@ -190,20 +190,26 @@ async function applyRateLimit(ip: string): Promise<RateLimitResult> {
   }
 }
 
-async function callDeepSeek(name: string, count: number, style: string): Promise<string[]> {
-  const apiKey = process.env['DEEPSEEK_API_KEY'];
-  if (!apiKey) {
-    throw Object.assign(new Error('服务端未配置 DEEPSEEK_API_KEY'), { code: 'missing_api_key' });
+function getGatewayAuthToken(): string | null {
+  return process.env['AI_GATEWAY_API_KEY'] ?? process.env['VERCEL_OIDC_TOKEN'] ?? null;
+}
+
+async function callAIGateway(name: string, count: number, style: string): Promise<string[]> {
+  const gatewayToken = getGatewayAuthToken();
+  if (!gatewayToken) {
+    throw Object.assign(new Error('服务端未配置 AI Gateway 认证信息'), {
+      code: 'missing_gateway_auth',
+    });
   }
 
-  const upstream = await fetch('https://api.deepseek.com/chat/completions', {
+  const upstream = await fetch('https://ai-gateway.vercel.sh/v1/chat/completions', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${gatewayToken}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'deepseek-chat',
+      model: process.env['AI_GATEWAY_MODEL'] ?? 'deepseek/deepseek-v3.2',
       temperature: 0.9,
       messages: [
         {
@@ -221,7 +227,14 @@ async function callDeepSeek(name: string, count: number, style: string): Promise
   });
 
   if (!upstream.ok) {
-    throw Object.assign(new Error('AI 服务返回错误，请稍后重试'), { code: 'upstream_error' });
+    const errorText = await upstream.text().catch(() => '');
+    const code = upstream.status === 401 || upstream.status === 403 ? 'gateway_auth_error' : 'upstream_error';
+    const message =
+      code === 'gateway_auth_error'
+        ? 'AI Gateway 认证失败，请检查项目配置'
+        : 'AI 服务返回错误，请稍后重试';
+    console.error('AI Gateway upstream error:', upstream.status, errorText);
+    throw Object.assign(new Error(message), { code });
   }
 
   const data = await upstream.json();
@@ -277,7 +290,7 @@ export async function handleGenerateEncouragementRequest(req: Request): Promise<
   }
 
   try {
-    const lines = await callDeepSeek(name, safeCount, style);
+    const lines = await callAIGateway(name, safeCount, style);
     return jsonResponse({
       success: true,
       lines,
@@ -290,7 +303,7 @@ export async function handleGenerateEncouragementRequest(req: Request): Promise<
       typeof error === 'object' && error && 'code' in error && typeof error.code === 'string'
         ? error.code
         : 'upstream_error';
-    const status = code === 'missing_api_key' ? 500 : 502;
+    const status = code === 'missing_gateway_auth' ? 500 : code === 'gateway_auth_error' ? 502 : 502;
     return jsonResponse({ success: false, error: code, message }, status);
   }
 }

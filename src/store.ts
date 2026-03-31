@@ -10,7 +10,6 @@ interface AppState {
   showFullPreview: boolean;
   aiLoading: boolean;
   aiRemainingCount: number | null;
-  showSettingsModal: boolean;
   showAIPanel: boolean;
   aiStyle: string;
   copyFromDay: Weekday | null;
@@ -34,7 +33,6 @@ interface AppState {
   setShowFullPreview: (show: boolean) => void;
   setAILoading: (loading: boolean) => void;
   setAIRemainingCount: (count: number | null) => void;
-  setShowSettingsModal: (show: boolean) => void;
   setShowAIPanel: (show: boolean) => void;
   setAIStyle: (style: string) => void;
   setCopyFromDay: (day: Weekday | null) => void;
@@ -80,7 +78,6 @@ export const useStore = create<AppState>()(
       showFullPreview: false,
       aiLoading: false,
       aiRemainingCount: null,
-      showSettingsModal: false,
       showAIPanel: false,
       aiStyle: 'gentle',
       copyFromDay: null,
@@ -231,7 +228,6 @@ export const useStore = create<AppState>()(
       setShowFullPreview: (show) => set({ showFullPreview: show }),
       setAILoading: (loading) => set({ aiLoading: loading }),
       setAIRemainingCount: (count) => set({ aiRemainingCount: count }),
-      setShowSettingsModal: (show) => set({ showSettingsModal: show }),
       setShowAIPanel: (show) => set({ showAIPanel: show }),
       setAIStyle: (style) => set({ aiStyle: style }),
 
